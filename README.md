@@ -4,7 +4,7 @@ Cloudcheck is made to be used in the same folder as [CloudFail](https://github.c
 
 Also create a empty text file called none.txt in the data folder, that way it doesn't do a subdomain brute when testing.
 
-Cloudcheck will automatically change your hosts file, using entries from CloudFail and test for a specified string to detect if said entry can be used to bypass Cloudflair.
+Cloudcheck will automatically change your hosts file, using entries from CloudFail and test for a specified string to detect if said entry can be used to bypass Cloudflare.
 
 Example: 
 ![](https://raw.githubusercontent.com/ANK1036Official/Cloudcheck/master/cloudcheck.png)
