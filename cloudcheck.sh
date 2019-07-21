@@ -7,6 +7,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 
+
 ## TOOL CHECK ##
 command -v python3 >/dev/null 2>&1 || { echo >&2 "I require python3 but it's not installed.  Aborting."; exit 1; }
 command -v curl >/dev/null 2>&1 || { echo >&2 "I require curl but it's not installed.  Aborting."; exit 1; }
@@ -27,6 +28,13 @@ TESTSTRING="__cf"
 echo -e  "Original cookies: \e[1;49;37m"$(curl -A 'Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0' -k --max-time 10 -s -c - "$TARGET_UNSTRIPPED" | egrep -iao "#HTTPONLY.*")"\e[0m"
 for check in $(python3 cloudfail.py -t $STRIPPED_TARGET -s none.txt | fgrep -a "FOUND:" | fgrep -iav "ON CLOUDFLARE" | cut -d ' ' -f 3 | egrep -ia "([0-9]{1,3}[\.]){3}[0-9]{1,3}"); do
 	echo "$check	$STRIPPED_TARGET" >> /etc/hosts
+	trap ctrl_c INT
+	function ctrl_c() {
+		echo "CTRL_C caught, removing last check from hosts..."
+		sed -i '$d' /etc/hosts
+		echo "Stopping..."
+		exit 1
+	}
 	HOSTCHECK=`gethostip -d $STRIPPED_TARGET`
 	if [[ $HOSTCHECK == $check ]]; then
 		echo -e "\e[1;49;37mHost check: $STRIPPED_TARGET = \e[1;49;33m$check\e[0m"
