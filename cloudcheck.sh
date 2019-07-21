@@ -11,7 +11,7 @@ fi
 command -v python3 >/dev/null 2>&1 || { echo >&2 "I require python3 but it's not installed.  Aborting."; exit 1; }
 command -v curl >/dev/null 2>&1 || { echo >&2 "I require curl but it's not installed.  Aborting."; exit 1; }
 command -v grep >/dev/null 2>&1 || { echo >&2 "I require grep but it's not installed.  Aborting."; exit 1; }
-command -v gethostip >/dev/null 2>&1 || { echo >&2 "I require gethostip but it's not installed.  Aborting."; exit 1; }
+command -v gethostip >/dev/null 2>&1 || { echo >&2 "I require syslinux-utils but it's not installed.  Aborting."; exit 1; }
 command -v sed >/dev/null 2>&1 || { echo >&2 "I require sed but it's not installed.  Aborting."; exit 1; }
 ##################
 
