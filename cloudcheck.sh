@@ -25,8 +25,8 @@ TARGET_UNSTRIPPED=$1
 COMPARESTRING=$2
 STRIPPED_TARGET=$(echo $TARGET_UNSTRIPPED | sed 's/^http\(\|s\):\/\///g' | sed 's#/*$##;s#^/*##')
 TESTSTRING="__cf"
-echo -e  "Original cookies: \e[1;49;37m"$(curl -A 'Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0' -k --max-time 10 -s -c - "$TARGET_UNSTRIPPED" | egrep -iao "#HTTPONLY.*")"\e[0m"
-for check in $(python3 cloudfail.py -t $STRIPPED_TARGET -s none.txt | fgrep -a "FOUND:" | fgrep -iav "ON CLOUDFLARE" | cut -d ' ' -f 3 | egrep -ia "([0-9]{1,3}[\.]){3}[0-9]{1,3}"); do
+echo -e  "Original cookies: \e[1;49;37m"$(curl -A 'Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0' -k --max-time 10 -s -c - "$TARGET_UNSTRIPPED" | grep -E -iao "#HTTPONLY.*")"\e[0m"
+for check in $(python3 cloudfail.py -t $STRIPPED_TARGET -s none.txt | fgrep -a "FOUND:" | fgrep -iav "ON CLOUDFLARE" | cut -d ' ' -f 3 | grep -E -ia "([0-9]{1,3}[\.]){3}[0-9]{1,3}"); do
 	echo "$check	$STRIPPED_TARGET" >> /etc/hosts
 	trap ctrl_c INT
 	function ctrl_c() {
@@ -39,7 +39,7 @@ for check in $(python3 cloudfail.py -t $STRIPPED_TARGET -s none.txt | fgrep -a "
 	if [[ $HOSTCHECK == $check ]]; then
 		echo -e "\e[1;49;37mHost check: $STRIPPED_TARGET = \e[1;49;33m$check\e[0m"
 		DATA=$(curl -A 'Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0' -k --max-time 10 -s -c - "$TARGET_UNSTRIPPED")
-		COOKIEDATA=$(echo $DATA | egrep -iao "#HTTPONLY.*")
+		COOKIEDATA=$(echo $DATA | grep -E -iao "#HTTPONLY.*")
 		if [[ $DATA =~ ^"# Netscape HTTP Cookie File" ]]; then
 			echo -e "\e[1;49;33m$check \e[1;49;37m-- \e[1;49;91mFalse\e[0m"
 		else
